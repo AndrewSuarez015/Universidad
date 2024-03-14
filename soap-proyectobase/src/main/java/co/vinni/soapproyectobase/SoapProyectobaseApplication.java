@@ -170,7 +170,6 @@ public class SoapProyectobaseApplication {
             return;
         }
 
-        // Asegúrate de que la longitud de las líneas y el formato coincidan
         System.out.println("| ID    | Placa  | Tipo      | Municipio      | Precio Compra | Valor Actual | Impuesto    | Estado |");
         System.out.println(new String(new char[95]).replace("\0", "-"));
 

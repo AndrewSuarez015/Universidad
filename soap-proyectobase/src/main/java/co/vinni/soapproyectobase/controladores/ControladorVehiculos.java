@@ -1,5 +1,5 @@
 package co.vinni.soapproyectobase.controladores;
-
+import java.util.Optional;
 import co.vinni.soapproyectobase.entidades.Vehiculo;
 import co.vinni.soapproyectobase.servicios.ServicioVehiculos;
 
@@ -20,6 +20,10 @@ public class ControladorVehiculos {
         return servicioVehiculos.consultarVehiculos();
     }
 
+    public Optional<Vehiculo> consultarVehiculoPorPlaca(String placa) {
+        return servicioVehiculos.consultarVehiculoPorPlaca(placa);
+    }
+
     // Actualizado para modificar vehículos por placa
     public boolean modificarVehiculoPorPlaca(String placa, Vehiculo vehiculoModificado) {
         return servicioVehiculos.modificarVehiculoPorPlaca(placa, vehiculoModificado);
@@ -33,4 +37,9 @@ public class ControladorVehiculos {
         List<Vehiculo> vehiculos = consultarVehiculos();
         return vehiculos.stream().anyMatch(vehiculo -> vehiculo.getPlaca().equalsIgnoreCase(placa));
     }
+
+    public boolean realizarPago(String placa) {
+        return servicioVehiculos.realizarPago(placa);
+    }
+
 }

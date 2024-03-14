@@ -7,6 +7,7 @@ import co.vinni.soapproyectobase.utilidades.UtilidadArchivos;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class ServicioVehiculos implements RepositorioVehiculo, Serializable {
     private List<Vehiculo> listaVehiculos;
@@ -35,6 +36,10 @@ public class ServicioVehiculos implements RepositorioVehiculo, Serializable {
         return listaVehiculos;
     }
 
+    public Optional<Vehiculo> consultarVehiculoPorPlaca(String placa) {
+        return listaVehiculos.stream().filter(vehiculo -> vehiculo.getPlaca().equalsIgnoreCase(placa)).findFirst();
+    }
+
     // Método para modificar vehículos Por placa
     public boolean modificarVehiculoPorPlaca(String placa, Vehiculo vehiculoModificado) {
         Optional<Vehiculo> vehiculoExistente = listaVehiculos.stream()
@@ -57,5 +62,21 @@ public class ServicioVehiculos implements RepositorioVehiculo, Serializable {
             UtilidadArchivos.guardar(ARCHIVO_VEHICULOS, listaVehiculos);
         }
         return resultado;
+    }
+
+    public boolean realizarPago(String placa) {
+        Optional<Vehiculo> vehiculoOpt = listaVehiculos.stream()
+                .filter(vehiculo -> vehiculo.getPlaca().equalsIgnoreCase(placa))
+                .findFirst();
+
+        if (vehiculoOpt.isPresent()) {
+            Vehiculo vehiculo = vehiculoOpt.get();
+            vehiculo.pagarImpuesto();
+            vehiculo.setFechaUltimoPago(LocalDate.now()); // Asume que tienes este setter.
+            UtilidadArchivos.guardar(ARCHIVO_VEHICULOS, listaVehiculos); // Guardar cambios
+            return true;
+        }
+
+        return false;
     }
 }

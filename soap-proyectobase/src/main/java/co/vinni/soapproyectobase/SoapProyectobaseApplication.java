@@ -22,16 +22,42 @@ public class SoapProyectobaseApplication {
 
     public static void main(String[] args) {
         boolean salir = false;
-
-        //Menu
         while (!salir) {
             System.out.println("\n========== Menú Principal ==========");
-            System.out.println("1. Registrar Vehículo");
-            System.out.println("2. Consultar Vehículos");
-            System.out.println("3. Modificar Vehículo");
-            System.out.println("4. Borrar Vehículo");
-            System.out.println("5. Salir");
+            System.out.println("1. Gestión de Vehículos");
+            System.out.println("2. Consulta de Clientes");
+            System.out.println("3. Salir");
             System.out.println("====================================");
+            System.out.print("Seleccione una opción: ");
+            int opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            switch (opcion) {
+                case 1:
+                    mostrarMenuGestionVehiculos();
+                    break;
+                case 2:
+                    mostrarMenuConsultaClientes();
+                    break;
+                case 3:
+                    salir = true;
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("\nOpción no válida\n");
+            }
+        }
+    }
+
+    private static void mostrarMenuGestionVehiculos() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println("\n========== Menú de Gestión de Vehículos ==========");
+            System.out.println("1. Registrar Vehículo");
+            System.out.println("2. Modificar Vehículo");
+            System.out.println("3. Borrar Vehículo");
+            System.out.println("4. Consultar Vehículos");
+            System.out.println("5. Regresar al Menú Principal");
             System.out.print("Seleccione una opción: ");
             int opcion = scanner.nextInt();
             scanner.nextLine(); // Limpiar el buffer
@@ -41,17 +67,70 @@ public class SoapProyectobaseApplication {
                     registrarVehiculo();
                     break;
                 case 2:
-                    consultarVehiculos();
-                    break;
-                case 3:
                     modificarVehiculo();
                     break;
-                case 4:
+                case 3:
                     borrarVehiculo();
                     break;
+                case 4:
+                    mostrarMenuConsultaVehiculos();
+                    break;
                 case 5:
-                    salir = true;
-                    System.out.println("Saliendo...");
+                    regresar = true;
+                    break;
+                default:
+                    System.out.println("\nOpción no válida\n");
+            }
+        }
+    }
+
+    private static void mostrarMenuConsultaVehiculos() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println("\n========== Menú de Consulta de Vehículos ==========");
+            System.out.println("1. Consultar Todos los Vehículos");
+            System.out.println("2. Consultar Vehículo por Placa");
+            System.out.println("3. Regresar");
+            System.out.print("Seleccione una opción: ");
+            int opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            switch (opcion) {
+                case 1:
+                    consultarVehiculos();
+                    break;
+                case 2:
+                    consultarVehiculoPorPlaca();
+                    break;
+                case 3:
+                    regresar = true;
+                    break;
+                default:
+                    System.out.println("\nOpción no válida\n");
+            }
+        }
+    }
+
+    private static void mostrarMenuConsultaClientes() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println("\n========== Menú de Consulta de Clientes ==========");
+            System.out.println("1. Consultar Vehículo por Placa");
+            System.out.println("2. Pagar Impuestos");
+            System.out.println("3. Regresar al Menú Principal");
+            System.out.print("Seleccione una opción: ");
+            int opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            switch (opcion) {
+                case 1:
+                    consultarVehiculoPorPlacaCliente(); // Este método mostrará solo los datos relevantes para el cliente
+                    break;
+                case 2:
+                    realizarPagoCliente(); // Este método gestionará el pago
+                    break;
+                case 3:
+                    regresar = true;
                     break;
                 default:
                     System.out.println("\nOpción no válida\n");
@@ -91,25 +170,21 @@ public class SoapProyectobaseApplication {
             return;
         }
 
-        // Añade una columna para la Fecha de Compra en el encabezado
-        String header = "| %-10s | %-10s | %-15s | %-15s | %-20s | %-20s | %-20s | %-20s |\n";
-        System.out.format(header, "ID", "Placa", "Tipo", "Municipio", "Fecha Compra", "Precio Compra", "Valor Actual", "Impuesto");
-        System.out.println(new String(new char[155]).replace("\0", "-")); // longitud de la línea divisoria
+        // Asegúrate de que la longitud de las líneas y el formato coincidan
+        System.out.println("| ID    | Placa  | Tipo      | Municipio      | Precio Compra | Valor Actual | Impuesto    | Estado |");
+        System.out.println(new String(new char[95]).replace("\0", "-"));
 
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-
         for (Vehiculo vehiculo : vehiculos) {
-            // Mapear datos de la tabla
-            String row = "| %-10d | %-10s | %-15s | %-15s | %-20s | %-20s | %-20s | %-20s |\n";
-            System.out.format(row,
+            System.out.format("| %-6d | %-6s | %-9s | %-14s | %-13s | %-12s | %-11s | %-6s |\n",
                     vehiculo.getId(),
                     vehiculo.getPlaca(),
                     vehiculo.getTipo(),
                     vehiculo.getMunicipioRegistro(),
-                    vehiculo.getFechaCompra(),
                     formatter.format(vehiculo.getPrecioCompra()),
                     formatter.format(vehiculo.getValorActual()),
-                    formatter.format(vehiculo.calcularImpuesto()));
+                    formatter.format(vehiculo.calcularImpuesto()),
+                    vehiculo.getEstado());
         }
     }
 
@@ -153,5 +228,58 @@ public class SoapProyectobaseApplication {
             input = scanner.nextLine().trim();
         }
         return input;
+    }
+
+    private static void consultarVehiculoPorPlaca() {
+        System.out.print("Digite la placa del vehículo a consultar: ");
+        String placa = scanner.nextLine();
+        Optional<Vehiculo> vehiculo = controladorVehiculos.consultarVehiculoPorPlaca(placa);
+
+        if (vehiculo.isPresent()) {
+            Vehiculo v = vehiculo.get();
+            // Encabezado de la tabla
+            System.out.println("| ID       | Placa     | Tipo           | Municipio          | Fecha Compra    | Precio Compra   | Valor Actual    | Impuesto        |");
+            System.out.println("|----------|-----------|----------------|--------------------|-----------------|-----------------|-----------------|-----------------|");
+
+            // Formato de los datos en la fila
+            String rowFormat = "| %-8d | %-9s | %-14s | %-18s | %-15s | %-15s | %-15s | %-15s |\n";
+            System.out.format(rowFormat,
+                    v.getId(),
+                    v.getPlaca(),
+                    v.getTipo(),
+                    v.getMunicipioRegistro(),
+                    v.getFechaCompra().toString(),
+                    formatter.format(v.getPrecioCompra()),
+                    formatter.format(v.getValorActual()),
+                    formatter.format(v.calcularImpuesto()));
+        } else {
+            System.out.println("No se encontró un vehículo con la placa ingresada.");
+        }
+    }
+
+    private static void consultarVehiculoPorPlacaCliente() {
+        System.out.print("Digite la placa del vehículo a consultar: ");
+        String placa = scanner.nextLine();
+        Optional<Vehiculo> vehiculoOpt = controladorVehiculos.consultarVehiculoPorPlaca(placa);
+
+        if (vehiculoOpt.isPresent()) {
+            Vehiculo v = vehiculoOpt.get();
+            System.out.println("| Placa | Tipo | Impuesto | Estado |");
+            System.out.println(new String(new char[40]).replace("\0", "-"));
+            String rowFormat = "| %-5s | %-4s | %-8s | %-6s |\n";
+            System.out.format(rowFormat, v.getPlaca(), v.getTipo(), formatter.format(v.calcularImpuesto()), v.getEstado());
+        } else {
+            System.out.println("No se encontró un vehículo con la placa ingresada.");
+        }
+    }
+
+    private static void realizarPagoCliente() {
+        System.out.print("Digite la placa del vehículo para realizar el pago: ");
+        String placa = scanner.nextLine();
+        if (controladorVehiculos.realizarPago(placa)) {
+            System.out.println("Pago realizado con éxito. El estado ha sido actualizado a 'Pagado'.");
+        } else {
+            System.out.println("No se encontró un vehículo con esa placa o el pago no se pudo realizar.");
+        }
     }
 }

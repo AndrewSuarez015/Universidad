@@ -20,6 +20,8 @@ public class Vehiculo implements Serializable {
     private LocalDate fechaCompra; // Nuevo campo para la fecha de compra
     private static final double TASA_DEPRECIACION = 0.10; // 10% anual
     private static final double TASA_IMPUESTO = 0.10; // 10% del valor actual
+    private String estado;
+    private LocalDate fechaUltimoPago;
 
     public Vehiculo(String placa, String tipo, String municipioRegistro, double precioCompra, LocalDate fechaCompra) {
         this.id = ++contadorId;
@@ -30,6 +32,8 @@ public class Vehiculo implements Serializable {
         this.valorActual = precioCompra; // Inicializar con el precio de compra
         this.fechaCompra = fechaCompra; // Asignar la fecha de compra
         depreciar(); // Aplicar depreciación inicial
+        this.estado = "Pendiente";
+        this.fechaUltimoPago = fechaCompra;
     }
 
     private void calcularValorActual() {
@@ -48,5 +52,15 @@ public class Vehiculo implements Serializable {
 
     public void depreciar() {
         calcularValorActual(); // Calcular el valor actual del vehículo
+    }
+
+    public void pagarImpuesto() {
+        this.estado = "Pagado";
+        this.fechaUltimoPago = LocalDate.now(); // Actualizamos la fecha de último pago al momento actual.
+    }
+
+    public void actualizarEstado() {
+        long years = ChronoUnit.YEARS.between(fechaUltimoPago, LocalDate.now());
+        this.estado = years >= 1 ? "Pendiente" : "Pagado";
     }
 }
